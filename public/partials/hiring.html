@@ -1,0 +1,91 @@
+<div class="container-fluid"  ng-controller="hiring">
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="widget-box">
+        <div class="widget-title bg_ly"><span class="icon"><i class="icon-chevron-down"></i></span>
+          <h5>New Applicant</h5>
+        </div>
+        <div class="widget-content">
+          <div class="row-fluid">
+            <div class="span6"  ng-init="$_applicant={}">
+              <div class="controls">
+                <input type="text" class="span11" placeholder="Name" ng-model="$_applicant.name">
+              </div>
+              <div class="controls">
+                <input type="text" class="span11" placeholder="Resume URL" ng-model="$_applicant.resumeUrl">
+              </div>
+            </div>
+
+            <div class="span6" ng-init="$_interviews=[]">
+              <div ng-repeat="interview in $_interviews" class="controls controls-row">
+                
+                <div ustack-at-user='{"multiple":false}' ng-disabled="!interview.$_edit" placeholder="面试官" ng-model="interview.interviewer" class="span4 m-wrap" ></div>
+                <input type="text" ng-model="interview.time" ng-disabled="!interview.$_edit" class="span4 m-wrap">
+                <a class="btn btn-info span2" ng-show="!interview.$_edit" ng-click="interview.$_edit=true">edit</a>
+                <a class="btn btn-danger span2" ng-show="!interview.$_edit" ng-click="interview.$_edit=true">delete</a>
+                <a class="btn btn-info span2" ng-show="interview.$_edit" ng-click="interview.$_edit=false">done</a>
+
+
+              </div>
+
+              <div class="controls controls-row"  ng-init="$_interviewInput={}">
+
+                <div ustack-at-user='{"multiple":false}' placeholder="Interviewer Name" ng-model="$_interviewInput.interviewer" class="span5 m-wrap" ></div>
+
+                <input type="text" data-date-format="yyyy-dd-mm"  date-picker class="span5 m-wrap" ng-model="$_interviewInput.time">
+
+                <a class="btn btn-info span2 " ng-click="$_interviews.push($_interviewInput)">add</a>
+              </div>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span12">
+              <a class="btn btn-success" ng-click="createApplicantAndInterviews($_applicant, $_interviews);$_applicant={};$interivews=[]">Save</a>
+              <a class="btn btn-danger" ng-click="resetEverything()">resetEverything</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="widget-box">
+        <div class="widget-title bg_ly"><span class="icon"><i class="icon-chevron-down"></i></span>
+          <h5>Applicants</h5>
+        </div>
+        <div class="widget-content">
+
+          <div ng-repeat="applicant in applicants" class="applicant">
+            <div>
+              
+              <span class="applicant-header-item item-score">
+                <span class="score label label-{{genScoreClass(sumScore(applicant.interviews))}}">{{sumScore(applicant.interviews)}}</span>
+              </span>
+              <span class="applicant-header-item item-name">
+                <a href="{{applicant.resumeUrl}}" target="_blank">{{applicant.name}}</a>
+              </span>
+
+              <span class="applicant-header-item item-result">
+                <span class="label label-{{genReulstClass(applicant.result)}}">{{applicant.result}}</span>
+              </span>
+            </div>
+            <div ng-repeat="interview in applicant.interviews">
+              <span class="applicant-header-item item-score">
+                <span class="score label label-{{genScoreClass(interview.score)}}">{{interview.score}}</span>
+              </span>
+              <span class="applicant-header-item"> 
+                <a href="#/interview/{{interview._id}}">{{interview.interviewer.profile.name}}</a>
+              </span>
+              <span class="applicant-header-item">{{interview.time}}</span>
+            </div>
+            <div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

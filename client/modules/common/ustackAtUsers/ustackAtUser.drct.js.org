@@ -1,0 +1,71 @@
+angular.module( APP.angular.moduleName )
+.directive("ustackAtUser",function( $meteor ){
+  return{
+    restrict :'A',
+    replace:true,
+    scope : true,
+    template : '<div class="UstackAtUser">'
+        + ' <div class="relatedUsers" ng-show="_related.length">'
+        + '  <div ng-repeat="user in _related" class="relatedUser" ng-click="select(user)">{{user.profile.name}}</div> '
+        + ' </div>'
+        + ' <div><input type="text"/></div>'
+        + '</div>',
+    link : function( $scope, $elem, $attrs ){
+        var options = angular.extend({
+            multiple : false,
+            id : "_id",
+          }, $attrs['ustackAtUser'] ? JSON.parse( $attrs['ustackAtUser'] ):{} )
+
+        var $input = $elem.find("input")
+        $input.attr("placeholder", $attrs['placeholder'])
+        
+        var showOptions = _.debounce(function(){
+          var nameFrag = $input.val()
+          Deps.autorun( function () {
+            var reg = new RegExp(".*"+nameFrag+".*")
+            var related = Meteor.users.find({"profile.name": reg}).fetch()
+            if( related.length && related.length !== 0 ){
+              $scope._related = related;
+              $scope.$digest()
+            }
+            console.log( related, $scope )
+
+          })
+
+        },1000)
+
+        $input.on("input",showOptions)
+
+        $scope.select = function( user ){
+          var result = parseToResult( user, options )
+          if( options.multiple ){
+            if( !$scope.$parent[$attrs['ngModel']] ){
+              $scope.$parent[$attrs['ngModel']] = []
+            }
+            $scope.$parent[$attrs['ngModel']].push( result )
+          }else{
+            $scope.$parent[$attrs['ngModel']] = result;
+          }
+
+          console.log( $scope.$parent[$attrs['ngModel']] )
+        }
+
+        function parseToResult( user, options ){
+          if( options.id ){
+            return user[options.id]
+          }
+
+          if( options.fields ){
+            var userNew = {}
+            options.fields.map(function( field ){
+              userNew[field] = user[field]
+            })
+            return userNew
+          }
+
+          return user
+        }
+
+    }
+  }
+})

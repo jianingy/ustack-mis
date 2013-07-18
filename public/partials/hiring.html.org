@@ -1,0 +1,49 @@
+<div class="Hiring" ng-controller="hiring">
+	<div>
+		<h2>登记新的应聘人</h2>
+		<div ng-init="$_applicant={}">
+			<input type="text" ng-model="$_applicant.name" placeholder="姓名"/>
+			<input type="text" ng-model="$_applicant.resumeUrl" placeholder="简历地址" />
+		</div>
+		<div>
+			<h3>面试任务</h3>
+			<div ng-init="$_interviews=[]">
+				<div ng-repeat="interview in $_interviews">
+					<div>
+						<div ustack-at-user='{"multiple":false}' ng-disabled="!interview.$_edit" placeholder="面试官" ng-model="interview.interviewer"></div>
+						<input type="text" ng-model="interview.time" ng-disabled="!interview.$_edit"/>
+						<a class="btn btn-mini btn-primary" ng-show="!interview.$_edit" ng-click="interview.$_edit=true">edit</a>
+						<a class="btn btn-mini btn-danger" ng-show="!interview.$_edit" ng-click="interview.$_edit=true">delete</a>
+						<a class="btn btn-mini btn-primary" ng-show="interview.$_edit" ng-click="interview.$_edit=false">done</a>
+					</div>
+				</div>
+				<div ng-init="$_interviewInput={}">
+					<div ustack-at-user='{"multiple":false}' placeholder="面试官" ng-model="$_interviewInput.interviewer" ></div>
+					<input type="datetime" placeholder="时间" ng-model="$_interviewInput.time"/>
+					<!-- <div date-picker="start"></div> -->
+					<a class="btn btn-mini btn-primary" ng-click="$_interviews.push($_interviewInput)">add</a>
+				</div>
+			</div>
+			
+		</div>
+		<a class="btn btn-mini btn-primary" ng-click="createApplicantAndInterviews($_applicant, $_interviews);$_applicant={};$interivews=[]">create</a>
+	</div>	
+
+	<div>
+		<div><a class="btn btn-mini btn-danger" ng-click="clear()">clear</a></div>
+		<h2>应聘人:</h2>
+		<div>
+			<div ng-repeat="applicant in applicants" class="applicant">
+				<div>
+					<span>{{applicant.name}}</span>
+					<a href="{{applicants.resumeUrl}}" target="_blank">简历</a>
+				</div>
+				<div ng-repeat="interview in applicant.interviews">
+					<a href="#/interview/{{interview._id}}">{{interview.interviewer.profile.name}}</a>
+				</div>
+				<div></div>
+			</div>
+		</div>
+	</div>
+
+</div>

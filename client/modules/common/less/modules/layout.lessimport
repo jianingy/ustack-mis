@@ -1,0 +1,17 @@
+.window-container{
+	height: 100%;
+	overflow: auto;
+}
+
+
+.region{
+	margin-left: 110px;
+	margin-bottom: 20px;
+	padding: 10px 0;
+	box-shadow: 0px 1px 2px #000;
+	background: #fff;
+}
+
+.container{
+	padding: 10px;
+}
